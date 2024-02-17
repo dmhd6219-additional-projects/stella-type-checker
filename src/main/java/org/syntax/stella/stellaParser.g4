@@ -362,22 +362,24 @@ pattern returns [ org.syntax.stella.Absyn.Pattern result ]
     { $result = new org.syntax.stella.Absyn.PatternRecord($p_5_2.result); }
   | Surrogate_id_SYMB_6 p_6_2=listPattern Surrogate_id_SYMB_7
     { $result = new org.syntax.stella.Absyn.PatternList($p_6_2.result); }
-  | Surrogate_id_SYMB_2 p_7_2=pattern Surrogate_id_SYMB_0 p_7_4=pattern Surrogate_id_SYMB_3
-    { $result = new org.syntax.stella.Absyn.PatternCons($p_7_2.result,$p_7_4.result); }
+  | Surrogate_id_SYMB_44 Surrogate_id_SYMB_2 p_7_3=pattern Surrogate_id_SYMB_0 p_7_5=pattern Surrogate_id_SYMB_3
+    { $result = new org.syntax.stella.Absyn.PatternCons($p_7_3.result,$p_7_5.result); }
+  | Surrogate_id_SYMB_2 p_8_2=pattern Surrogate_id_SYMB_0 p_8_4=pattern Surrogate_id_SYMB_3
+    { $result = org.syntax.stella.AbsynDef.patternCons($p_8_2.result,$p_8_4.result); }
   | Surrogate_id_SYMB_49
     { $result = new org.syntax.stella.Absyn.PatternFalse(); }
   | Surrogate_id_SYMB_72
     { $result = new org.syntax.stella.Absyn.PatternTrue(); }
   | Surrogate_id_SYMB_76
     { $result = new org.syntax.stella.Absyn.PatternUnit(); }
-  | p_11_1=INTEGER
-    { $result = new org.syntax.stella.Absyn.PatternInt(Integer.parseInt($p_11_1.getText())); }
-  | Surrogate_id_SYMB_68 Surrogate_id_SYMB_2 p_12_3=pattern Surrogate_id_SYMB_3
-    { $result = new org.syntax.stella.Absyn.PatternSucc($p_12_3.result); }
-  | p_13_1=StellaIdent
-    { $result = new org.syntax.stella.Absyn.PatternVar($p_13_1.getText()); }
-  | Surrogate_id_SYMB_2 p_14_2=pattern Surrogate_id_SYMB_3
-    { $result = $p_14_2.result; }
+  | p_12_1=INTEGER
+    { $result = new org.syntax.stella.Absyn.PatternInt(Integer.parseInt($p_12_1.getText())); }
+  | Surrogate_id_SYMB_68 Surrogate_id_SYMB_2 p_13_3=pattern Surrogate_id_SYMB_3
+    { $result = new org.syntax.stella.Absyn.PatternSucc($p_13_3.result); }
+  | p_14_1=StellaIdent
+    { $result = new org.syntax.stella.Absyn.PatternVar($p_14_1.getText()); }
+  | Surrogate_id_SYMB_2 p_15_2=pattern Surrogate_id_SYMB_3
+    { $result = $p_15_2.result; }
   ;
 listPattern returns [ org.syntax.stella.Absyn.ListPattern result ]
   :  /* empty */

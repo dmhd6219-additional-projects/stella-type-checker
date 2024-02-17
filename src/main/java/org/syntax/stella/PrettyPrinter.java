@@ -1277,6 +1277,7 @@ public class PrettyPrinter
     {
        org.syntax.stella.Absyn.PatternCons _patterncons = (org.syntax.stella.Absyn.PatternCons) foo;
        if (_i_ > 0) render(_L_PAREN);
+       render("cons");
        render("(");
        pp(_patterncons.pattern_1, 0);
        render(",");
