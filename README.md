@@ -16,3 +16,9 @@ The template contains:
 9. [`org.stella.MainTest`](src/test/java/org/stella/MainTest) — some tests for the typechecker.
 
 When implementing a typechecker, you should write your code primarily in [`org.stella.typecheck.VisitTypeCheck`](src/main/java/org/stella/typecheck/VisitTypeCheck.java).
+
+## Updating grammar
+
+```sh
+bnfc --java-antlr Stella.cf -l -p org.syntax -o src/main/java
+```
