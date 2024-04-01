@@ -57,6 +57,7 @@ public class AbstractVisitor<R,A> implements AllVisitor<R,A> {
       throw new IllegalArgumentException(this.getClass().getName() + ": " + p);
     }
     /* Type */
+    public R visit(org.syntax.stella.Absyn.TypeAuto p, A arg) { return visitDefault(p, arg); }
     public R visit(org.syntax.stella.Absyn.TypeFun p, A arg) { return visitDefault(p, arg); }
     public R visit(org.syntax.stella.Absyn.TypeForAll p, A arg) { return visitDefault(p, arg); }
     public R visit(org.syntax.stella.Absyn.TypeRec p, A arg) { return visitDefault(p, arg); }
@@ -99,6 +100,8 @@ public class AbstractVisitor<R,A> implements AllVisitor<R,A> {
       throw new IllegalArgumentException(this.getClass().getName() + ": " + p);
     }
     /* Pattern */
+    public R visit(org.syntax.stella.Absyn.PatternCastAs p, A arg) { return visitDefault(p, arg); }
+    public R visit(org.syntax.stella.Absyn.PatternAsc p, A arg) { return visitDefault(p, arg); }
     public R visit(org.syntax.stella.Absyn.PatternVariant p, A arg) { return visitDefault(p, arg); }
     public R visit(org.syntax.stella.Absyn.PatternInl p, A arg) { return visitDefault(p, arg); }
     public R visit(org.syntax.stella.Absyn.PatternInr p, A arg) { return visitDefault(p, arg); }
@@ -166,6 +169,7 @@ public class AbstractVisitor<R,A> implements AllVisitor<R,A> {
     public R visit(org.syntax.stella.Absyn.Throw p, A arg) { return visitDefault(p, arg); }
     public R visit(org.syntax.stella.Absyn.TryCatch p, A arg) { return visitDefault(p, arg); }
     public R visit(org.syntax.stella.Absyn.TryWith p, A arg) { return visitDefault(p, arg); }
+    public R visit(org.syntax.stella.Absyn.TryCastAs p, A arg) { return visitDefault(p, arg); }
     public R visit(org.syntax.stella.Absyn.Inl p, A arg) { return visitDefault(p, arg); }
     public R visit(org.syntax.stella.Absyn.Inr p, A arg) { return visitDefault(p, arg); }
     public R visit(org.syntax.stella.Absyn.Succ p, A arg) { return visitDefault(p, arg); }

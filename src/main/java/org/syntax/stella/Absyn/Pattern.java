@@ -5,6 +5,8 @@ package org.syntax.stella.Absyn;
 public abstract class Pattern implements java.io.Serializable {
   public abstract <R,A> R accept(Pattern.Visitor<R,A> v, A arg);
   public interface Visitor <R,A> {
+    public R visit(org.syntax.stella.Absyn.PatternCastAs p, A arg);
+    public R visit(org.syntax.stella.Absyn.PatternAsc p, A arg);
     public R visit(org.syntax.stella.Absyn.PatternVariant p, A arg);
     public R visit(org.syntax.stella.Absyn.PatternInl p, A arg);
     public R visit(org.syntax.stella.Absyn.PatternInr p, A arg);

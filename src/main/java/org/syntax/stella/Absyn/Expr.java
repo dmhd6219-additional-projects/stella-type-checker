@@ -45,6 +45,7 @@ public abstract class Expr implements java.io.Serializable {
     public R visit(org.syntax.stella.Absyn.Throw p, A arg);
     public R visit(org.syntax.stella.Absyn.TryCatch p, A arg);
     public R visit(org.syntax.stella.Absyn.TryWith p, A arg);
+    public R visit(org.syntax.stella.Absyn.TryCastAs p, A arg);
     public R visit(org.syntax.stella.Absyn.Inl p, A arg);
     public R visit(org.syntax.stella.Absyn.Inr p, A arg);
     public R visit(org.syntax.stella.Absyn.Succ p, A arg);

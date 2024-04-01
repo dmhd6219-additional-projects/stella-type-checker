@@ -135,6 +135,10 @@ public abstract class FoldVisitor<R,A> implements AllVisitor<R,A> {
     }
 
 /* Type */
+    public R visit(org.syntax.stella.Absyn.TypeAuto p, A arg) {
+      R r = leaf(arg);
+      return r;
+    }
     public R visit(org.syntax.stella.Absyn.TypeFun p, A arg) {
       R r = leaf(arg);
       for (org.syntax.stella.Absyn.Type x : p.listtype_)
@@ -261,6 +265,18 @@ public abstract class FoldVisitor<R,A> implements AllVisitor<R,A> {
     }
 
 /* Pattern */
+    public R visit(org.syntax.stella.Absyn.PatternCastAs p, A arg) {
+      R r = leaf(arg);
+      r = combine(p.pattern_.accept(this, arg), r, arg);
+      r = combine(p.type_.accept(this, arg), r, arg);
+      return r;
+    }
+    public R visit(org.syntax.stella.Absyn.PatternAsc p, A arg) {
+      R r = leaf(arg);
+      r = combine(p.pattern_.accept(this, arg), r, arg);
+      r = combine(p.type_.accept(this, arg), r, arg);
+      return r;
+    }
     public R visit(org.syntax.stella.Absyn.PatternVariant p, A arg) {
       R r = leaf(arg);
       r = combine(p.patterndata_.accept(this, arg), r, arg);
@@ -599,6 +615,15 @@ public abstract class FoldVisitor<R,A> implements AllVisitor<R,A> {
       R r = leaf(arg);
       r = combine(p.expr_1.accept(this, arg), r, arg);
       r = combine(p.expr_2.accept(this, arg), r, arg);
+      return r;
+    }
+    public R visit(org.syntax.stella.Absyn.TryCastAs p, A arg) {
+      R r = leaf(arg);
+      r = combine(p.expr_1.accept(this, arg), r, arg);
+      r = combine(p.type_.accept(this, arg), r, arg);
+      r = combine(p.pattern_.accept(this, arg), r, arg);
+      r = combine(p.expr_2.accept(this, arg), r, arg);
+      r = combine(p.expr_3.accept(this, arg), r, arg);
       return r;
     }
     public R visit(org.syntax.stella.Absyn.Inl p, A arg) {

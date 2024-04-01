@@ -172,6 +172,10 @@ public class ComposVisitor<A> implements
     }
 
     /* Type */
+    public org.syntax.stella.Absyn.Type visit(org.syntax.stella.Absyn.TypeAuto p, A arg)
+    {
+      return new org.syntax.stella.Absyn.TypeAuto();
+    }
     public org.syntax.stella.Absyn.Type visit(org.syntax.stella.Absyn.TypeFun p, A arg)
     {
       org.syntax.stella.Absyn.ListType listtype_ = new org.syntax.stella.Absyn.ListType();
@@ -305,6 +309,18 @@ public class ComposVisitor<A> implements
     }
 
     /* Pattern */
+    public org.syntax.stella.Absyn.Pattern visit(org.syntax.stella.Absyn.PatternCastAs p, A arg)
+    {
+      org.syntax.stella.Absyn.Pattern pattern_ = p.pattern_.accept(this, arg);
+      org.syntax.stella.Absyn.Type type_ = p.type_.accept(this, arg);
+      return new org.syntax.stella.Absyn.PatternCastAs(pattern_, type_);
+    }
+    public org.syntax.stella.Absyn.Pattern visit(org.syntax.stella.Absyn.PatternAsc p, A arg)
+    {
+      org.syntax.stella.Absyn.Pattern pattern_ = p.pattern_.accept(this, arg);
+      org.syntax.stella.Absyn.Type type_ = p.type_.accept(this, arg);
+      return new org.syntax.stella.Absyn.PatternAsc(pattern_, type_);
+    }
     public org.syntax.stella.Absyn.Pattern visit(org.syntax.stella.Absyn.PatternVariant p, A arg)
     {
       String stellaident_ = p.stellaident_;
@@ -665,6 +681,15 @@ public class ComposVisitor<A> implements
       org.syntax.stella.Absyn.Expr expr_1 = p.expr_1.accept(this, arg);
       org.syntax.stella.Absyn.Expr expr_2 = p.expr_2.accept(this, arg);
       return new org.syntax.stella.Absyn.TryWith(expr_1, expr_2);
+    }
+    public org.syntax.stella.Absyn.Expr visit(org.syntax.stella.Absyn.TryCastAs p, A arg)
+    {
+      org.syntax.stella.Absyn.Expr expr_1 = p.expr_1.accept(this, arg);
+      org.syntax.stella.Absyn.Type type_ = p.type_.accept(this, arg);
+      org.syntax.stella.Absyn.Pattern pattern_ = p.pattern_.accept(this, arg);
+      org.syntax.stella.Absyn.Expr expr_2 = p.expr_2.accept(this, arg);
+      org.syntax.stella.Absyn.Expr expr_3 = p.expr_3.accept(this, arg);
+      return new org.syntax.stella.Absyn.TryCastAs(expr_1, type_, pattern_, expr_2, expr_3);
     }
     public org.syntax.stella.Absyn.Expr visit(org.syntax.stella.Absyn.Inl p, A arg)
     {

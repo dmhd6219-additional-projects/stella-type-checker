@@ -961,7 +961,14 @@ public class PrettyPrinter
 
   private static void pp(org.syntax.stella.Absyn.Type foo, int _i_)
   {
-    if (foo instanceof org.syntax.stella.Absyn.TypeFun)
+    if (foo instanceof org.syntax.stella.Absyn.TypeAuto)
+    {
+       org.syntax.stella.Absyn.TypeAuto _typeauto = (org.syntax.stella.Absyn.TypeAuto) foo;
+       if (_i_ > 0) render(_L_PAREN);
+       render("auto");
+       if (_i_ > 0) render(_R_PAREN);
+    }
+    else     if (foo instanceof org.syntax.stella.Absyn.TypeFun)
     {
        org.syntax.stella.Absyn.TypeFun _typefun = (org.syntax.stella.Absyn.TypeFun) foo;
        if (_i_ > 0) render(_L_PAREN);
@@ -1216,7 +1223,26 @@ public class PrettyPrinter
 
   private static void pp(org.syntax.stella.Absyn.Pattern foo, int _i_)
   {
-    if (foo instanceof org.syntax.stella.Absyn.PatternVariant)
+    if (foo instanceof org.syntax.stella.Absyn.PatternCastAs)
+    {
+       org.syntax.stella.Absyn.PatternCastAs _patterncastas = (org.syntax.stella.Absyn.PatternCastAs) foo;
+       if (_i_ > 0) render(_L_PAREN);
+       pp(_patterncastas.pattern_, 0);
+       render("cast");
+       render("as");
+       pp(_patterncastas.type_, 0);
+       if (_i_ > 0) render(_R_PAREN);
+    }
+    else     if (foo instanceof org.syntax.stella.Absyn.PatternAsc)
+    {
+       org.syntax.stella.Absyn.PatternAsc _patternasc = (org.syntax.stella.Absyn.PatternAsc) foo;
+       if (_i_ > 0) render(_L_PAREN);
+       pp(_patternasc.pattern_, 0);
+       render("as");
+       pp(_patternasc.type_, 0);
+       if (_i_ > 0) render(_R_PAREN);
+    }
+    else     if (foo instanceof org.syntax.stella.Absyn.PatternVariant)
     {
        org.syntax.stella.Absyn.PatternVariant _patternvariant = (org.syntax.stella.Absyn.PatternVariant) foo;
        if (_i_ > 0) render(_L_PAREN);
@@ -1667,7 +1693,7 @@ public class PrettyPrinter
        if (_i_ > 5) render(_L_PAREN);
        render("new");
        render("(");
-       pp(_ref.expr_, 5);
+       pp(_ref.expr_, 0);
        render(")");
        if (_i_ > 5) render(_R_PAREN);
     }
@@ -1821,6 +1847,28 @@ public class PrettyPrinter
        render("with");
        render("{");
        pp(_trywith.expr_2, 0);
+       render("}");
+       if (_i_ > 6) render(_R_PAREN);
+    }
+    else     if (foo instanceof org.syntax.stella.Absyn.TryCastAs)
+    {
+       org.syntax.stella.Absyn.TryCastAs _trycastas = (org.syntax.stella.Absyn.TryCastAs) foo;
+       if (_i_ > 6) render(_L_PAREN);
+       render("try");
+       render("{");
+       pp(_trycastas.expr_1, 0);
+       render("}");
+       render("cast");
+       render("as");
+       pp(_trycastas.type_, 0);
+       render("{");
+       pp(_trycastas.pattern_, 0);
+       render("=>");
+       pp(_trycastas.expr_2, 0);
+       render("}");
+       render("with");
+       render("{");
+       pp(_trycastas.expr_3, 0);
        render("}");
        if (_i_ > 6) render(_R_PAREN);
     }
@@ -2383,6 +2431,11 @@ public class PrettyPrinter
 
   private static void sh(org.syntax.stella.Absyn.Type foo)
   {
+    if (foo instanceof org.syntax.stella.Absyn.TypeAuto)
+    {
+       org.syntax.stella.Absyn.TypeAuto _typeauto = (org.syntax.stella.Absyn.TypeAuto) foo;
+       render("TypeAuto");
+    }
     if (foo instanceof org.syntax.stella.Absyn.TypeFun)
     {
        org.syntax.stella.Absyn.TypeFun _typefun = (org.syntax.stella.Absyn.TypeFun) foo;
@@ -2590,6 +2643,24 @@ public class PrettyPrinter
 
   private static void sh(org.syntax.stella.Absyn.Pattern foo)
   {
+    if (foo instanceof org.syntax.stella.Absyn.PatternCastAs)
+    {
+       org.syntax.stella.Absyn.PatternCastAs _patterncastas = (org.syntax.stella.Absyn.PatternCastAs) foo;
+       render("(");
+       render("PatternCastAs");
+       sh(_patterncastas.pattern_);
+       sh(_patterncastas.type_);
+       render(")");
+    }
+    if (foo instanceof org.syntax.stella.Absyn.PatternAsc)
+    {
+       org.syntax.stella.Absyn.PatternAsc _patternasc = (org.syntax.stella.Absyn.PatternAsc) foo;
+       render("(");
+       render("PatternAsc");
+       sh(_patternasc.pattern_);
+       sh(_patternasc.type_);
+       render(")");
+    }
     if (foo instanceof org.syntax.stella.Absyn.PatternVariant)
     {
        org.syntax.stella.Absyn.PatternVariant _patternvariant = (org.syntax.stella.Absyn.PatternVariant) foo;
@@ -3120,6 +3191,18 @@ public class PrettyPrinter
        render("TryWith");
        sh(_trywith.expr_1);
        sh(_trywith.expr_2);
+       render(")");
+    }
+    if (foo instanceof org.syntax.stella.Absyn.TryCastAs)
+    {
+       org.syntax.stella.Absyn.TryCastAs _trycastas = (org.syntax.stella.Absyn.TryCastAs) foo;
+       render("(");
+       render("TryCastAs");
+       sh(_trycastas.expr_1);
+       sh(_trycastas.type_);
+       sh(_trycastas.pattern_);
+       sh(_trycastas.expr_2);
+       sh(_trycastas.expr_3);
        render(")");
     }
     if (foo instanceof org.syntax.stella.Absyn.Inl)

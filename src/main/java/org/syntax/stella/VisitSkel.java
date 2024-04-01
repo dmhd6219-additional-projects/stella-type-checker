@@ -152,6 +152,10 @@ public class VisitSkel
   }
   public class TypeVisitor<R,A> implements org.syntax.stella.Absyn.Type.Visitor<R,A>
   {
+    public R visit(org.syntax.stella.Absyn.TypeAuto p, A arg)
+    { /* Code for TypeAuto goes here */
+      return null;
+    }
     public R visit(org.syntax.stella.Absyn.TypeFun p, A arg)
     { /* Code for TypeFun goes here */
       for (org.syntax.stella.Absyn.Type x: p.listtype_) {
@@ -284,6 +288,18 @@ public class VisitSkel
   }
   public class PatternVisitor<R,A> implements org.syntax.stella.Absyn.Pattern.Visitor<R,A>
   {
+    public R visit(org.syntax.stella.Absyn.PatternCastAs p, A arg)
+    { /* Code for PatternCastAs goes here */
+      p.pattern_.accept(new PatternVisitor<R,A>(), arg);
+      p.type_.accept(new TypeVisitor<R,A>(), arg);
+      return null;
+    }
+    public R visit(org.syntax.stella.Absyn.PatternAsc p, A arg)
+    { /* Code for PatternAsc goes here */
+      p.pattern_.accept(new PatternVisitor<R,A>(), arg);
+      p.type_.accept(new TypeVisitor<R,A>(), arg);
+      return null;
+    }
     public R visit(org.syntax.stella.Absyn.PatternVariant p, A arg)
     { /* Code for PatternVariant goes here */
       //p.stellaident_;
@@ -624,6 +640,15 @@ public class VisitSkel
     { /* Code for TryWith goes here */
       p.expr_1.accept(new ExprVisitor<R,A>(), arg);
       p.expr_2.accept(new ExprVisitor<R,A>(), arg);
+      return null;
+    }
+    public R visit(org.syntax.stella.Absyn.TryCastAs p, A arg)
+    { /* Code for TryCastAs goes here */
+      p.expr_1.accept(new ExprVisitor<R,A>(), arg);
+      p.type_.accept(new TypeVisitor<R,A>(), arg);
+      p.pattern_.accept(new PatternVisitor<R,A>(), arg);
+      p.expr_2.accept(new ExprVisitor<R,A>(), arg);
+      p.expr_3.accept(new ExprVisitor<R,A>(), arg);
       return null;
     }
     public R visit(org.syntax.stella.Absyn.Inl p, A arg)
