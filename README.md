@@ -17,6 +17,32 @@ The template contains:
 
 When implementing a typechecker, you should write your code primarily in [`org.stella.typecheck.VisitTypeCheck`](src/main/java/org/stella/typecheck/VisitTypeCheck.java).
 
+## Build and run using terminal
+
+You can use **Maven** to build the project in a single **fat JAR** file and run it.
+
+### Prerequisites
+
+* Install [Maven](https://maven.apache.org/)
+
+### Build
+
+Build a single fat JAR file using maven:
+  ```
+  mvn clean package
+  ```
+
+  This will create a file named `stella-implementation-in-java-1.0-SNAPSHOT.jar` under the `target` directory.
+
+### Run
+
+Run command
+
+```
+java -jar target/stella-implementation-in-java-1.0-SNAPSHOT.jar
+```
+
+
 ## Updating grammar
 
 ```sh
