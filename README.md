@@ -58,7 +58,7 @@ More specifically, the typechecker must visit the following syntactic constructi
 - [x] Variables (immutable) (Var)
 - [x] For #unit-type extension: TypeUnit, ConstUnit
 - [x] For #pairs extension: TypeTuple, Tuple, DotTuple (you may assume exactly two components)
-- [ ] For #let-bindings extension: Let, APatternBinding, PatternVar (you may assume that all patterns are just variables)
+- [x] For #let-bindings extension: Let, APatternBinding, PatternVar (you may assume that all patterns are just variables)
 
 In case of a type error, the the typechecker must exit with a non-zero code and provide a human-readable error message (in stdout or stderr). The error message must contain (somewhere) exactly one of the following type error tags (depending on the type error):
 - [ ] ERROR_UNEXPECTED_TYPE_FOR_PARAMETER — unexpected type specified for a parameter of an anonymous function

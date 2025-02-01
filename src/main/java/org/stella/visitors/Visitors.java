@@ -107,7 +107,13 @@ public class Visitors {
 
         @Override
         public Type visit(Let p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "Let not implemented");
+            // TODO: check extension
+            Map<String, Type> lhs = new HashMap<>();
+            for (PatternBinding patternBinding : p.listpatternbinding_) {
+                lhs.putAll(patternBinding.accept(new PatternBindingVisitor(), arg));
+            }
+
+            return p.expr_.accept(this, arg.withVariables(lhs));
         }
 
         @Override
@@ -457,6 +463,16 @@ public class Visitors {
         @Override
         public Type visit(SomeReturnType p, Context arg) {
             return p.type_;
+        }
+    }
+
+    public class PatternBindingVisitor implements PatternBinding.Visitor<Map<String, Type>, Context> {
+        @Override
+        public Map<String, Type> visit(APatternBinding p, Context arg) {
+            Map<String, Type> map = new HashMap<>();
+            PatternVar pattern = (PatternVar) p.pattern_;
+            map.put(pattern.stellaident_, p.expr_.accept(new ExprVisitor(), arg));
+            return map;
         }
     }
 

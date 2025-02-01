@@ -27,4 +27,10 @@ public class Context {
         }
         return context;
     }
+
+    public Context withVariables(Map<String, Type> variables) {
+        Context context = copy();
+        context.vars.putAll(variables);
+        return context;
+    }
 }
