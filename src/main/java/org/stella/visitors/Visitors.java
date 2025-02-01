@@ -358,7 +358,22 @@ public class Visitors {
 
         @Override
         public Type visit(NatRec p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "NatRec not implemented");
+            checkType(new TypeNat(), p.expr_1.accept(this, arg));
+
+            Type type2 = p.expr_2.accept(this, arg);
+
+            ListType listType1 = new ListType();
+            listType1.add(new TypeNat());
+
+            ListType listType2 = new ListType();
+            listType2.add(type2);
+
+            Type type1 = new TypeFun(listType1, new TypeFun(listType2, type2));
+            Type type3 = p.expr_3.accept(this, arg);
+
+            checkType(type1, type3);
+
+            return type2;
         }
 
         @Override
@@ -388,6 +403,10 @@ public class Visitors {
 
         @Override
         public Type visit(ConstInt p, Context arg) {
+            // TODO: check extension
+            if (p.integer_ < 0) {
+                throw new StellaException("ERROR_ILLEGAL_NEGATIVE_LITERAL", "");
+            }
             return new TypeNat();
         }
 
