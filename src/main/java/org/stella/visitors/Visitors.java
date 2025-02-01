@@ -16,12 +16,6 @@ public class Visitors {
             Context ctx = new Context();
 
             for (Decl decl : p.listdecl_) {
-                if (decl instanceof DeclFun declFun) {
-                    ctx.functions.put(declFun.stellaident_, declFun);
-                }
-            }
-
-            for (Decl decl : p.listdecl_) {
                 decl.accept(new DeclVisitor(), ctx);
             }
 
@@ -36,6 +30,8 @@ public class Visitors {
     public class DeclVisitor implements Decl.Visitor<Object, Context> {
         @Override
         public Object visit(DeclFun p, Context arg) {
+            arg.functions.put(p.stellaident_, p);
+
             Context ctx = arg.copy();
 
             if (p.listparamdecl_.size() != arg.functions.get(p.stellaident_).listparamdecl_.size()) {
@@ -46,10 +42,15 @@ public class Visitors {
                 ctx.vars.putAll(param.accept(new ParamDeclVisitor(), ctx));
             }
 
+            // TODO: check extension enabled
+            for (Decl fun : p.listdecl_) {
+                fun.accept(new DeclVisitor(), ctx);
+            }
+
             checkType(p.returntype_.accept(new ReturnTypeVisitor(), arg),
                     p.expr_.accept(new ExprVisitor(), ctx));
 
-            return null;
+            return ctx;
         }
 
         @Override
@@ -165,7 +166,7 @@ public class Visitors {
             ListType paramTypes = new ListType();
             for (ParamDecl param : p.listparamdecl_) {
                 ctx.vars.putAll(param.accept(new ParamDeclVisitor(), ctx));
-                for (Map.Entry<String, Type> entry : param.accept(new ParamDeclVisitor(), ctx).entrySet()){
+                for (Map.Entry<String, Type> entry : param.accept(new ParamDeclVisitor(), ctx).entrySet()) {
                     paramTypes.add(entry.getValue());
                 }
             }
