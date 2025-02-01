@@ -54,7 +54,7 @@ More specifically, the typechecker must visit the following syntactic constructi
 - [x] Function declaration (with exactly one parameter) (DeclFun, AParamDecl, SomeReturnType)
 - [x] Booleans (TypeBool, ConstTrue, ConstFalse, If)
 - [x] Natural numbers (TypeNat, ConstInt(0), Succ, IsZero, NatRec)
-- [ ] First-class functions (with exactly one parameter) (TypeFun, Abstraction, AParamDecl, Application)
+- [x] First-class functions (with exactly one parameter) (TypeFun, Abstraction, AParamDecl, Application)
 - [ ] Variables (immutable) (Var)
 - [ ] For #unit-type extension: TypeUnit, ConstUnit
 - [ ] For #pairs extension: TypeTuple, Tuple, DotTuple (you may assume exactly two components)
