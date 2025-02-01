@@ -79,7 +79,7 @@ public class Main
         {
             System.err.println("At line " + e.line + ", column " + e.column + " :");
             System.err.println("     " + e.getMessage());
-            System.exit(1);
+
         }
     }
 }

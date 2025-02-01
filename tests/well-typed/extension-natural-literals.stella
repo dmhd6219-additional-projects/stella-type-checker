@@ -1,0 +1,14 @@
+language core;
+extend with #natural-literals;
+
+fn f(_ : Nat) -> Nat {
+  return 2030
+}
+
+fn zero(_ : Nat) -> Nat {
+  return 0
+}
+
+fn main(_ : Nat) -> Nat {
+  return 5
+}

@@ -1,0 +1,16 @@
+language core;
+extend with #nullary-functions;
+
+fn func2(n : Nat) -> fn () -> Nat {
+  return fn () {
+    return n
+  }
+}
+
+fn getFive() -> Nat {
+  return succ(succ(succ(succ(succ(0)))))
+}
+
+fn main (n : Nat) -> Nat {
+  return getFive()
+}

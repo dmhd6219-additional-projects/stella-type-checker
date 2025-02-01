@@ -43,7 +43,8 @@ class MainTest {
             "tests/ill-typed/undefined-variable-1.stella",
             "tests/ill-typed/undefined-variable-2.stella",
             "tests/ill-typed/bad-squares-1.stella",
-            "tests/ill-typed/bad-squares-2.stella"})
+            "tests/ill-typed/bad-squares-2.stella"
+    })
     void testIllTyped(String filepath) throws Exception {
         String[] args = new String[0];
         final FileInputStream fips = new FileInputStream(filepath);

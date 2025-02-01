@@ -1,0 +1,16 @@
+language core;
+extend with #multiparameter-functions;
+
+fn func(a : Nat, b : Nat) -> Bool {
+  return true
+}
+
+fn func2(n : Nat) -> fn (Nat, Nat) -> Nat {
+  return fn (a : Nat, b : Nat) {
+    return n
+  }
+}
+
+fn main(_ : Nat) -> Bool {
+  return func(0, succ(0))
+}
