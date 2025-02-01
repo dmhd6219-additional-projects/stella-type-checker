@@ -1,0 +1,10 @@
+language core;
+extend with #pairs;
+
+fn unwrap(t : {Nat, Nat}) -> Nat {
+  return t.3
+}
+
+fn main(n : Nat) -> Nat {
+  return n
+}

@@ -1,0 +1,10 @@
+language core;
+extend with #tuples;
+
+fn unwrap(t : {Nat, Nat, Nat}) -> Nat {
+  return t.4
+}
+
+fn main(n : Nat) -> Nat {
+  return n
+}

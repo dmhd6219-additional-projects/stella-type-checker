@@ -272,7 +272,10 @@ public class Visitors {
             }
 
             Integer index = p.integer_;
-            // TODO: exception on wrong index
+            if (index > typeTuple.listtype_.size()){
+                throw new StellaException("ERROR_TUPLE_INDEX_OUT_OF_BOUNDS", "");
+            }
+
             return typeTuple.listtype_.get(index - 1);
         }
 

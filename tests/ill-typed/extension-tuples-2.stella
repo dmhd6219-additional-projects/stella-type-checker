@@ -1,0 +1,10 @@
+language core;
+extend with #tuples;
+
+fn noop(n : Nat) -> {} {
+  return {n}
+}
+
+fn main(n : Nat) -> Nat {
+  return n
+}
