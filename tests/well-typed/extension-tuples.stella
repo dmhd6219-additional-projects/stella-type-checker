@@ -1,0 +1,14 @@
+language core;
+extend with #tuples;
+
+fn noop(_ : {}) -> {} {
+  return {}
+}
+
+fn unwrap(t : {Nat, Nat, Nat}) -> {Nat, Nat} {
+  return {t.1, t.2}
+}
+
+fn main(n : Nat) -> Nat {
+  return unwrap({n, succ(n), succ(succ(n))}).1
+}

@@ -260,12 +260,24 @@ public class Visitors {
 
         @Override
         public Type visit(DotTuple p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "DotTuple not implemented");
+            Type type = p.expr_.accept(this, arg);
+            if (!(type instanceof TypeTuple typeTuple)) {
+                throw new StellaException("ERROR_NOT_A_TUPLE", "");
+            }
+
+            Integer index = p.integer_;
+            // TODO: exception on wrong index
+            return typeTuple.listtype_.get(index - 1);
         }
 
         @Override
         public Type visit(Tuple p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "Tuple not implemented");
+            ListType listType = new ListType();
+            for (Expr listExpr : p.listexpr_) {
+                listType.add(listExpr.accept(this, arg));
+            }
+            // TODO: check extension
+            return new TypeTuple(listType);
         }
 
         @Override

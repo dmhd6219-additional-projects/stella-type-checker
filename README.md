@@ -57,7 +57,7 @@ More specifically, the typechecker must visit the following syntactic constructi
 - [x] First-class functions (with exactly one parameter) (TypeFun, Abstraction, AParamDecl, Application)
 - [x] Variables (immutable) (Var)
 - [x] For #unit-type extension: TypeUnit, ConstUnit
-- [ ] For #pairs extension: TypeTuple, Tuple, DotTuple (you may assume exactly two components)
+- [x] For #pairs extension: TypeTuple, Tuple, DotTuple (you may assume exactly two components)
 - [ ] For #let-bindings extension: Let, APatternBinding, PatternVar (you may assume that all patterns are just variables)
 
 In case of a type error, the the typechecker must exit with a non-zero code and provide a human-readable error message (in stdout or stderr). The error message must contain (somewhere) exactly one of the following type error tags (depending on the type error):
@@ -68,7 +68,7 @@ In case of a type error, the the typechecker must exit with a non-zero code and 
 - [ ] ERROR_UNDEFINED_VARIABLE — undefined variable in a an expression
 - [x] ERROR_MISSING_MAIN — a program is missing main function
 - [ ] ERROR_UNEXPECTED_TUPLE — unexpected tuple/pair where an expression of a non-tuple type is expected
-- [ ] ERROR_NOT_A_TUPLE — unexpected expression where a tuple/pair is expected
+- [x] ERROR_NOT_A_TUPLE — unexpected expression where a tuple/pair is expected
 
 Additionally, you may implement some of the following extensions for extra course credit:
 
