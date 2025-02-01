@@ -398,6 +398,7 @@ public class Visitors {
 
         @Override
         public Type visit(ConstUnit p, Context arg) {
+            // TODO: check extension
             return new TypeUnit();
         }
 

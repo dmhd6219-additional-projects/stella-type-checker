@@ -56,7 +56,7 @@ More specifically, the typechecker must visit the following syntactic constructi
 - [x] Natural numbers (TypeNat, ConstInt(0), Succ, IsZero, NatRec)
 - [x] First-class functions (with exactly one parameter) (TypeFun, Abstraction, AParamDecl, Application)
 - [x] Variables (immutable) (Var)
-- [ ] For #unit-type extension: TypeUnit, ConstUnit
+- [x] For #unit-type extension: TypeUnit, ConstUnit
 - [ ] For #pairs extension: TypeTuple, Tuple, DotTuple (you may assume exactly two components)
 - [ ] For #let-bindings extension: Let, APatternBinding, PatternVar (you may assume that all patterns are just variables)
 
