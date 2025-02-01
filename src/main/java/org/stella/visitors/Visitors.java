@@ -20,7 +20,7 @@ public class Visitors {
             }
 
             if (!ctx.functions.containsKey("main")) {
-                throw new StellaException("NOT IMPLEMENTED", "Main function not found");
+                throw new StellaException("ERROR_MISSING_MAIN", "Main function not found");
             }
 
             return ctx;
@@ -50,7 +50,7 @@ public class Visitors {
             checkType(p.returntype_.accept(new ReturnTypeVisitor(), arg),
                     p.expr_.accept(new ExprVisitor(), ctx));
 
-            return ctx;
+            return null;
         }
 
         @Override
