@@ -1,9 +1,14 @@
 language core;
 
-fn increment_twice(n : Nat) -> Nat {
-  return succ(succ(n))
-}
+extend with #nested-function-declarations;
 
 fn main(n : Nat) -> Nat {
-  return increment_twice(n)
+
+    fn increment_twice(p : Nat) -> (fn (Nat) -> Nat) {
+        return fn(m : Nat) {
+            return succ(m)
+        }
+    }
+
+    return increment_twice(0)(0)
 }

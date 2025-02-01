@@ -35,7 +35,7 @@ public class Visitors {
             Context ctx = arg.copy();
 
             if (p.listparamdecl_.size() != arg.functions.get(p.stellaident_).listparamdecl_.size()) {
-                throw new StellaException("NOT IMPLEMENTED", "Parameter count mismatch");
+                throw new StellaException("ERROR_INCORRECT_NUMBER_OF_ARGUMENTS", "Parameter count mismatch");
             }
 
             for (ParamDecl param : p.listparamdecl_) {
@@ -47,8 +47,10 @@ public class Visitors {
                 fun.accept(new DeclVisitor(), ctx);
             }
 
-            checkType(p.returntype_.accept(new ReturnTypeVisitor(), arg),
-                    p.expr_.accept(new ExprVisitor(), ctx));
+            checkType(
+                    p.returntype_.accept(new ReturnTypeVisitor(), arg),
+                    p.expr_.accept(new ExprVisitor(), ctx)
+            );
 
             return null;
         }
