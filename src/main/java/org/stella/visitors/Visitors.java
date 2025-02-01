@@ -6,6 +6,9 @@ import org.syntax.stella.Absyn.*;
 import org.syntax.stella.Absyn.Record;
 import org.syntax.stella.PrettyPrinter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Visitors {
     public class ProgramVisitor implements Program.Visitor<Context, Context> {
         @Override
@@ -40,7 +43,7 @@ public class Visitors {
             }
 
             for (ParamDecl param : p.listparamdecl_) {
-                ctx = param.accept(new ParamDeclVisitor(), ctx);
+                ctx.vars.putAll(param.accept(new ParamDeclVisitor(), ctx));
             }
 
             checkType(p.returntype_.accept(new ReturnTypeVisitor(), arg),
@@ -70,13 +73,13 @@ public class Visitors {
         }
     }
 
-    // returns context copy with new declared vae
-    public class ParamDeclVisitor implements ParamDecl.Visitor<Context, Context> {
+    // returns context copy with new declared vars
+    public static class ParamDeclVisitor implements ParamDecl.Visitor<Map<String, Type>, Context> {
         @Override
-        public Context visit(AParamDecl p, Context arg) {
-            Context ctx = arg.copy();
-            ctx.vars.put(p.stellaident_, p.type_);
-            return ctx;
+        public Map<String, Type> visit(AParamDecl p, Context arg) {
+            Map<String, Type> map = new HashMap<>();
+            map.put(p.stellaident_, p.type_);
+            return map;
         }
     }
 
@@ -156,7 +159,17 @@ public class Visitors {
 
         @Override
         public Type visit(Abstraction p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "Abstraction not implemented");
+            Context ctx = arg.withFunction(p);
+            Type exprType = p.expr_.accept(this, ctx);
+
+            ListType paramTypes = new ListType();
+            for (ParamDecl param : p.listparamdecl_) {
+                ctx.vars.putAll(param.accept(new ParamDeclVisitor(), ctx));
+                for (Map.Entry<String, Type> entry : param.accept(new ParamDeclVisitor(), ctx).entrySet()){
+                    paramTypes.add(entry.getValue());
+                }
+            }
+            return new TypeFun(paramTypes, exprType);
         }
 
         @Override
@@ -390,8 +403,8 @@ public class Visitors {
                 DeclFun declFun = arg.functions.get(p.stellaident_);
                 ListType listType = new ListType();
                 for (ParamDecl param : declFun.listparamdecl_) {
-                    Context ctx = param.accept(new ParamDeclVisitor(), new Context());
-                    listType.addAll(ctx.vars.values());
+                    Map<String, Type> map = param.accept(new ParamDeclVisitor(), new Context());
+                    listType.addAll(map.values());
                 }
                 return new TypeFun(listType, declFun.returntype_.accept(new ReturnTypeVisitor(), arg));
             }

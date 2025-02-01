@@ -1,8 +1,7 @@
 package org.stella.context;
 
-import org.syntax.stella.Absyn.Decl;
-import org.syntax.stella.Absyn.DeclFun;
-import org.syntax.stella.Absyn.Type;
+import org.stella.visitors.Visitors;
+import org.syntax.stella.Absyn.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +17,14 @@ public class Context {
         context.functions.putAll(functions);
         context.vars.putAll(vars);
         context.currentFun = currentFun;
+        return context;
+    }
+
+    public Context withFunction(Abstraction function) {
+        Context context = copy();
+        for (ParamDecl paramDecl : function.listparamdecl_) {
+            context.vars.putAll(paramDecl.accept(new Visitors.ParamDeclVisitor(), context));
+        }
         return context;
     }
 }
