@@ -53,7 +53,7 @@ More specifically, the typechecker must visit the following syntactic constructi
 - [x] Program (module) (AProgram)
 - [x] Function declaration (with exactly one parameter) (DeclFun, AParamDecl, SomeReturnType)
 - [x] Booleans (TypeBool, ConstTrue, ConstFalse, If)
-- [ ] Natural numbers (TypeNat, ConstInt(0), Succ, IsZero, NatRec)
+- [x] Natural numbers (TypeNat, ConstInt(0), Succ, IsZero, NatRec)
 - [ ] First-class functions (with exactly one parameter) (TypeFun, Abstraction, AParamDecl, Application)
 - [ ] Variables (immutable) (Var)
 - [ ] For #unit-type extension: TypeUnit, ConstUnit
