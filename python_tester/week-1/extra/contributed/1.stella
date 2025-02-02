@@ -1,0 +1,7 @@
+language core;
+
+extend with #tuples;
+
+fn main(n : Nat) -> Nat {
+  return ({fn(x : Nat) {return x}, 0, false}.1)(n)
+}
