@@ -72,6 +72,23 @@ public class Visitors {
 
             }
 
+            if (expected instanceof TypeFun expectedFun){
+                if (type instanceof TypeFun returnTypeFun){
+                    if (expectedFun.listtype_.size() != returnTypeFun.listtype_.size()) {
+                        throw new StellaException("ERROR_UNEXPECTED_NUMBER_OF_PARAMETERS_IN_LAMBDA",
+                                String.format("Expected: %s, Got: %s", expectedFun.listtype_.size(), returnTypeFun.listtype_.size())
+                        );
+                    }
+
+                    if (!expectedFun.listtype_.equals(returnTypeFun.listtype_)) {
+                        throw new StellaException("ERROR_UNEXPECTED_TYPE_FOR_PARAMETER",
+                                String.format("Expected: %s, Got: %s", PrettyPrinter.print(expectedFun.listtype_), PrettyPrinter.print(returnTypeFun.listtype_))
+                        );
+                    }
+
+                }
+            }
+
             checkType(
                     expected,
                     type,
@@ -535,20 +552,6 @@ public class Visitors {
                 if (tupleExpected.listtype_.size() != typeTuple.listtype_.size()) {
                     throw new StellaException("ERROR_UNEXPECTED_TUPLE_LENGTH",
                             String.format("Expected: %s, Got: %s", tupleExpected.listtype_.size(), typeTuple.listtype_.size()));
-                }
-            }
-
-            if (expected instanceof TypeFun funExpected && type instanceof TypeFun typeFun) {
-                if (funExpected.listtype_.size() != typeFun.listtype_.size()) {
-                    throw new StellaException("ERROR_UNEXPECTED_NUMBER_OF_PARAMETERS_IN_LAMBDA",
-                            String.format("Expected: %s, Got: %s", funExpected.listtype_.size(), typeFun.listtype_.size())
-                    );
-                }
-
-                if (!funExpected.listtype_.equals(typeFun.listtype_)) {
-                    throw new StellaException("ERROR_UNEXPECTED_TYPE_FOR_PARAMETER",
-                            String.format("Expected: %s, Got: %s", PrettyPrinter.print(funExpected.listtype_), PrettyPrinter.print(typeFun.listtype_))
-                    );
                 }
             }
 
