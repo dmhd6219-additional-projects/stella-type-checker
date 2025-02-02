@@ -62,9 +62,19 @@ public class Visitors {
                 fun.accept(new DeclVisitor(), ctx);
             }
 
+            Type expected = p.returntype_.accept(new ReturnTypeVisitor(), arg);
+            Type type = p.expr_.accept(new ExprVisitor(), ctx);
+
+            if (!(expected instanceof TypeFun) && (p.expr_ instanceof Abstraction)) {
+                throw new StellaException("ERROR_UNEXPECTED_LAMBDA",
+                        String.format("Expected: %s, Got: %s", PrettyPrinter.print(expected), PrettyPrinter.print(type))
+                );
+
+            }
+
             checkType(
-                    p.returntype_.accept(new ReturnTypeVisitor(), arg),
-                    p.expr_.accept(new ExprVisitor(), ctx),
+                    expected,
+                    type,
                     ctx
             );
 
@@ -541,13 +551,6 @@ public class Visitors {
                     );
                 }
             }
-
-            if (!(expected instanceof TypeFun) && (type instanceof TypeFun typeFun)) {
-                throw new StellaException("ERROR_UNEXPECTED_LAMBDA",
-                        String.format("Expected: %s, Got: %s", PrettyPrinter.print(expected), PrettyPrinter.print(typeFun))
-                );
-            }
-
 
             throw new StellaException("ERROR_UNEXPECTED_TYPE_FOR_EXPRESSION",
                     PrettyPrinter.print(expected) + " | " + PrettyPrinter.print(type));
