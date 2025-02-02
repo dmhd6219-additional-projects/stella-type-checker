@@ -15,6 +15,10 @@ public class Visitors {
         public Context visit(AProgram p, Context context) {
             Context ctx = new Context();
 
+            for (Extension extension : p.listextension_) {
+                ctx.extensions.addAll(extension.accept(new ExtensionVisitor(), ctx));
+            }
+
             for (Decl decl : p.listdecl_) {
                 decl.accept(new DeclVisitor(), ctx);
             }
@@ -41,18 +45,27 @@ public class Visitors {
                 throw new StellaException("ERROR_INCORRECT_NUMBER_OF_ARGUMENTS", "Parameter count mismatch");
             }
 
+            if (p.listparamdecl_.isEmpty()) {
+                checkExtension("#nullary-functions", ctx);
+            }
+
+            if (p.listparamdecl_.size() > 1) {
+                checkExtension("#multiparameter-functions", ctx);
+            }
+
             for (ParamDecl param : p.listparamdecl_) {
                 ctx.vars.putAll(param.accept(new ParamDeclVisitor(), ctx));
             }
 
-            // TODO: check extension enabled
             for (Decl fun : p.listdecl_) {
+                checkExtension("#nested-function-declarations", ctx);
                 fun.accept(new DeclVisitor(), ctx);
             }
 
             checkType(
                     p.returntype_.accept(new ReturnTypeVisitor(), arg),
-                    p.expr_.accept(new ExprVisitor(), ctx)
+                    p.expr_.accept(new ExprVisitor(), ctx),
+                    ctx
             );
 
             return null;
@@ -85,6 +98,14 @@ public class Visitors {
         public Map<String, Type> visit(AParamDecl p, Context arg) {
             Map<String, Type> map = new HashMap<>();
             map.put(p.stellaident_, p.type_);
+            if (p.type_ instanceof TypeTuple typeTuple) {
+                if (typeTuple.listtype_.size() == 2) {
+                    checkExtension("#pairs", arg);
+                } else {
+                    checkExtension("#tuples", arg);
+                }
+            }
+
             return map;
         }
     }
@@ -102,15 +123,15 @@ public class Visitors {
 
         @Override
         public Type visit(If p, Context arg) {
-            checkType(new TypeBool(), p.expr_1.accept(this, arg));
-            checkType(p.expr_2.accept(this, arg), p.expr_3.accept(this, arg));
+            checkType(new TypeBool(), p.expr_1.accept(this, arg), arg);
+            checkType(p.expr_2.accept(this, arg), p.expr_3.accept(this, arg), arg);
 
             return p.expr_2.accept(this, arg);
         }
 
         @Override
         public Type visit(Let p, Context arg) {
-            // TODO: check extension
+            checkExtension("#let-bindings", arg);
             Map<String, Type> lhs = new HashMap<>();
             for (PatternBinding patternBinding : p.listpatternbinding_) {
                 lhs.putAll(patternBinding.accept(new PatternBindingVisitor(), arg));
@@ -251,7 +272,7 @@ public class Visitors {
             }
 
             for (int i = 0; i < p.listexpr_.size(); i++) {
-                checkType(typeFun.listtype_.get(i), p.listexpr_.get(i).accept(this, arg));
+                checkType(typeFun.listtype_.get(i), p.listexpr_.get(i).accept(this, arg), arg);
             }
 
             return typeFun.type_;
@@ -284,11 +305,16 @@ public class Visitors {
 
         @Override
         public Type visit(Tuple p, Context arg) {
+            if (p.listexpr_.size() == 2) {
+                checkExtension("#pairs", arg);
+            } else {
+                checkExtension("#tuples", arg);
+            }
+
             ListType listType = new ListType();
             for (Expr listExpr : p.listexpr_) {
                 listType.add(listExpr.accept(this, arg));
             }
-            // TODO: check extension
             return new TypeTuple(listType);
         }
 
@@ -354,7 +380,7 @@ public class Visitors {
 
         @Override
         public Type visit(Succ p, Context arg) {
-            checkType(new TypeNat(), p.expr_.accept(this, arg));
+            checkType(new TypeNat(), p.expr_.accept(this, arg), arg);
             return new TypeNat();
         }
 
@@ -365,13 +391,13 @@ public class Visitors {
 
         @Override
         public Type visit(Pred p, Context arg) {
-            checkType(new TypeNat(), p.expr_.accept(this, arg));
+            checkType(new TypeNat(), p.expr_.accept(this, arg), arg);
             return new TypeNat();
         }
 
         @Override
         public Type visit(IsZero p, Context arg) {
-            checkType(new TypeNat(), p.expr_.accept(this, arg));
+            checkType(new TypeNat(), p.expr_.accept(this, arg), arg);
             return new TypeBool();
         }
 
@@ -382,7 +408,7 @@ public class Visitors {
 
         @Override
         public Type visit(NatRec p, Context arg) {
-            checkType(new TypeNat(), p.expr_1.accept(this, arg));
+            checkType(new TypeNat(), p.expr_1.accept(this, arg), arg);
 
             Type type2 = p.expr_2.accept(this, arg);
 
@@ -395,7 +421,7 @@ public class Visitors {
             Type type1 = new TypeFun(listType1, new TypeFun(listType2, type2));
             Type type3 = p.expr_3.accept(this, arg);
 
-            checkType(type1, type3);
+            checkType(type1, type3, arg);
 
             return type2;
         }
@@ -422,16 +448,20 @@ public class Visitors {
 
         @Override
         public Type visit(ConstUnit p, Context arg) {
-            // TODO: check extension
+            checkExtension("#unit-type", arg);
             return new TypeUnit();
         }
 
         @Override
         public Type visit(ConstInt p, Context arg) {
-            // TODO: check extension
+            if (p.integer_ != 0) {
+                checkExtension("#natural-literals", arg);
+            }
+
             if (p.integer_ < 0) {
                 throw new StellaException("ERROR_ILLEGAL_NEGATIVE_LITERAL", "");
             }
+
             return new TypeNat();
         }
 
@@ -450,7 +480,7 @@ public class Visitors {
                 DeclFun declFun = arg.functions.get(p.stellaident_);
                 ListType listType = new ListType();
                 for (ParamDecl param : declFun.listparamdecl_) {
-                    Map<String, Type> map = param.accept(new ParamDeclVisitor(), new Context());
+                    Map<String, Type> map = param.accept(new ParamDeclVisitor(), arg);
                     listType.addAll(map.values());
                 }
                 return new TypeFun(listType, declFun.returntype_.accept(new ReturnTypeVisitor(), arg));
@@ -482,7 +512,14 @@ public class Visitors {
         }
     }
 
-    public void checkType(Type expected, Type type) {
+    public static class ExtensionVisitor implements Extension.Visitor<ListExtensionName, Context> {
+        @Override
+        public ListExtensionName visit(AnExtension p, Context arg) {
+            return p.listextensionname_;
+        }
+    }
+
+    public void checkType(Type expected, Type type, Context context) {
         if (!expected.equals(type)) {
             if (expected instanceof TypeTuple tupleExpected && type instanceof TypeTuple typeTuple) {
                 if (tupleExpected.listtype_.size() != typeTuple.listtype_.size()) {
@@ -514,6 +551,30 @@ public class Visitors {
 
             throw new StellaException("ERROR_UNEXPECTED_TYPE_FOR_EXPRESSION",
                     PrettyPrinter.print(expected) + " | " + PrettyPrinter.print(type));
+        }
+
+        if (expected instanceof TypeUnit || type instanceof TypeUnit) {
+            checkExtension("#unit-type", context);
+        }
+
+        if (expected instanceof TypeTuple expectedTuple) {
+            if (expectedTuple.listtype_.size() == 2) {
+                checkExtension("#pairs", context);
+            } else {
+                checkExtension("#tuples", context);
+            }
+        }
+    }
+
+    public static void checkExtension(String extension, Context context) {
+        System.out.println(context);
+        if (!context.extensions.contains(extension)) {
+            if (extension.equals("#pairs")) {
+                checkExtension("#tuples", context);
+                return;
+            }
+
+            throw new StellaException("ERROR_EXTENSION_IS_NOT_ENABLED", extension);
         }
     }
 }

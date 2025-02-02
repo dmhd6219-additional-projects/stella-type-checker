@@ -152,7 +152,7 @@ public class VisitTypeCheck
       return null;
     }
   }
-  public class TypeVisitor<R,A> implements org.syntax.stella.Absyn.Type.Visitor<R,A>
+  public class  TypeVisitor<R,A> implements org.syntax.stella.Absyn.Type.Visitor<R,A>
   {
     public R visit(org.syntax.stella.Absyn.TypeAuto p, A arg)
     { /* Code for TypeAuto goes here */

@@ -27,7 +27,7 @@ class MainTest {
         final InputStream original = System.in;
         final FileInputStream fips = new FileInputStream(filepath);
         System.setIn(fips);
-        Assertions.assertDoesNotThrow(() -> Main.main(args));
+        Assertions.assertDoesNotThrow(() -> Main.main(args), "Test failed for file: " + filepath);
         System.setIn(original);
     }
 
@@ -37,8 +37,8 @@ class MainTest {
         String[] args = new String[0];
         final FileInputStream fips = new FileInputStream(filepath);
         System.setIn(fips);
-        Exception exception = assertThrows(Exception.class, () -> Main.main(args), "Expected the type checker to fail!");
-        System.out.println("Type Error: " + exception.getMessage());
+        Exception exception = assertThrows(Exception.class, () -> Main.main(args), "Expected the type checker to fail for file: " + filepath);
+        System.out.println("Type Error in file " + filepath + ": " + exception.getMessage());
     }
 
     static Stream<String> wellTypedFiles() throws IOException {

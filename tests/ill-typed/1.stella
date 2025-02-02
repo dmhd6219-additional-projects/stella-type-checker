@@ -2,10 +2,10 @@ language core;
 
 extend with #nested-function-declarations;
 
-fn main(n : Nat) -> Bool {
+fn main(n : Nat) -> Nat {
 
     fn increment_twice(p : Nat) -> (fn (Nat) -> Nat) {
-        return fn(m : Nat) {
+        return fn(m : Nat, g : Nat) {
             return succ(m)
         }
     }
