@@ -1,4 +1,4 @@
-package org.stella.typecheck;
+package org.stella.exceptions;
 
 public class StellaException extends RuntimeException {
 
@@ -15,7 +15,7 @@ public class StellaException extends RuntimeException {
     @Override
     public String getMessage() {
         if (debug) {
-            return super.getMessage() + " " + information;
+            return super.getMessage() + " : " + information;
         }
         return super.getMessage();
     }

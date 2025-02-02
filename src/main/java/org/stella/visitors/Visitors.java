@@ -1,7 +1,7 @@
 package org.stella.visitors;
 
 import org.stella.context.Context;
-import org.stella.typecheck.StellaException;
+import org.stella.exceptions.StellaException;
 import org.syntax.stella.Absyn.*;
 import org.syntax.stella.Absyn.Record;
 import org.syntax.stella.PrettyPrinter;
@@ -72,8 +72,8 @@ public class Visitors {
 
             }
 
-            if (expected instanceof TypeFun expectedFun){
-                if (type instanceof TypeFun returnTypeFun){
+            if (expected instanceof TypeFun expectedFun) {
+                if (type instanceof TypeFun returnTypeFun) {
                     if (expectedFun.listtype_.size() != returnTypeFun.listtype_.size()) {
                         throw new StellaException("ERROR_UNEXPECTED_NUMBER_OF_PARAMETERS_IN_LAMBDA",
                                 String.format("Expected: %s, Got: %s", expectedFun.listtype_.size(), returnTypeFun.listtype_.size())
@@ -119,7 +119,6 @@ public class Visitors {
         }
     }
 
-    // returns context copy with new declared vars
     public static class ParamDeclVisitor implements ParamDecl.Visitor<Map<String, Type>, Context> {
         @Override
         public Map<String, Type> visit(AParamDecl p, Context arg) {
@@ -556,7 +555,7 @@ public class Visitors {
             }
 
             throw new StellaException("ERROR_UNEXPECTED_TYPE_FOR_EXPRESSION",
-                    PrettyPrinter.print(expected) + " | " + PrettyPrinter.print(type));
+                    String.format("Expected: %s, Got: %s", PrettyPrinter.print(expected), PrettyPrinter.print(type)));
         }
 
         if (expected instanceof TypeUnit || type instanceof TypeUnit) {
@@ -573,7 +572,6 @@ public class Visitors {
     }
 
     public static void checkExtension(String extension, Context context) {
-        System.out.println(context);
         if (!context.extensions.contains(extension)) {
             if (extension.equals("#pairs")) {
                 checkExtension("#tuples", context);
