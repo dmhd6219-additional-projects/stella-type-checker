@@ -22,6 +22,9 @@ public class Visitors {
             if (!ctx.functions.containsKey("main")) {
                 throw new StellaException("ERROR_MISSING_MAIN", "Main function not found");
             }
+            if (ctx.functions.get("main").listparamdecl_.size() != 1) {
+                throw new StellaException("ERROR_INCORRECT_ARITY_OF_MAIN", "Main function contains" + ctx.functions.get("main").listparamdecl_.size() + "but needed only 1");
+            }
 
             return ctx;
         }
@@ -272,7 +275,7 @@ public class Visitors {
             }
 
             Integer index = p.integer_;
-            if (index > typeTuple.listtype_.size()){
+            if (index > typeTuple.listtype_.size()) {
                 throw new StellaException("ERROR_TUPLE_INDEX_OUT_OF_BOUNDS", "");
             }
 
@@ -481,6 +484,34 @@ public class Visitors {
 
     public void checkType(Type expected, Type type) {
         if (!expected.equals(type)) {
+            if (expected instanceof TypeTuple tupleExpected && type instanceof TypeTuple typeTuple) {
+                if (tupleExpected.listtype_.size() != typeTuple.listtype_.size()) {
+                    throw new StellaException("ERROR_UNEXPECTED_TUPLE_LENGTH",
+                            String.format("Expected: %s, Got: %s", tupleExpected.listtype_.size(), typeTuple.listtype_.size()));
+                }
+            }
+
+            if (expected instanceof TypeFun funExpected && type instanceof TypeFun typeFun) {
+                if (funExpected.listtype_.size() != typeFun.listtype_.size()) {
+                    throw new StellaException("ERROR_UNEXPECTED_NUMBER_OF_PARAMETERS_IN_LAMBDA",
+                            String.format("Expected: %s, Got: %s", funExpected.listtype_.size(), typeFun.listtype_.size())
+                    );
+                }
+
+                if (!funExpected.listtype_.equals(typeFun.listtype_)) {
+                    throw new StellaException("ERROR_UNEXPECTED_TYPE_FOR_PARAMETER",
+                            String.format("Expected: %s, Got: %s", PrettyPrinter.print(funExpected.listtype_), PrettyPrinter.print(typeFun.listtype_))
+                    );
+                }
+            }
+
+            if (!(expected instanceof TypeFun) && (type instanceof TypeFun typeFun)) {
+                throw new StellaException("ERROR_UNEXPECTED_LAMBDA",
+                        String.format("Expected: %s, Got: %s", PrettyPrinter.print(expected), PrettyPrinter.print(typeFun))
+                );
+            }
+
+
             throw new StellaException("ERROR_UNEXPECTED_TYPE_FOR_EXPRESSION",
                     PrettyPrinter.print(expected) + " | " + PrettyPrinter.print(type));
         }

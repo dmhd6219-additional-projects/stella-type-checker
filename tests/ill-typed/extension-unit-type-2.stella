@@ -1,5 +1,0 @@
-language core;
-
-fn main(n : Unit) -> Unit {
-  return n
-}

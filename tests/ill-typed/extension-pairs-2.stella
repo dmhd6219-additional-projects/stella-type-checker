@@ -1,9 +1,0 @@
-language core;
-
-fn wrap(t : Nat) -> {Nat, Nat} {
-  return {t, t}
-}
-
-fn main(n : Nat) -> Nat {
-  return n
-}

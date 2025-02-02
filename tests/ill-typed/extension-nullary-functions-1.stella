@@ -1,9 +1,0 @@
-language core;
-
-fn getFive() -> Nat {
-  return succ(succ(succ(succ(succ(0)))))
-}
-
-fn main (n : Nat) -> Nat {
-  return getFive()
-}
