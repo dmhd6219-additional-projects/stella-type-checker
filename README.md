@@ -61,18 +61,18 @@ More specifically, the typechecker must visit the following syntactic constructi
 - [x] For #let-bindings extension: Let, APatternBinding, PatternVar (you may assume that all patterns are just variables)
 
 In case of a type error, the the typechecker must exit with a non-zero code and provide a human-readable error message (in stdout or stderr). The error message must contain (somewhere) exactly one of the following type error tags (depending on the type error):
-- [ ] ERROR_UNEXPECTED_TYPE_FOR_PARAMETER — unexpected type specified for a parameter of an anonymous function
-- [ ] ERROR_UNEXPECTED_TYPE_FOR_EXPRESSION — type of an expression does not match an expected type (known from larger context)
-- [ ] ERROR_UNEXPECTED_LAMBDA — unexpected anonymous function where an expression of a non-function type is expected
+- [x] ERROR_UNEXPECTED_TYPE_FOR_PARAMETER — unexpected type specified for a parameter of an anonymous function
+- [x] ERROR_UNEXPECTED_TYPE_FOR_EXPRESSION — type of an expression does not match an expected type (known from larger context)
+- [x] ERROR_UNEXPECTED_LAMBDA — unexpected anonymous function where an expression of a non-function type is expected
 - [x] ERROR_NOT_A_FUNCTION — unexpected expression where a function is expected
-- [ ] ERROR_UNDEFINED_VARIABLE — undefined variable in a an expression
+- [x] ERROR_UNDEFINED_VARIABLE — undefined variable in a an expression
 - [x] ERROR_MISSING_MAIN — a program is missing main function
-- [ ] ERROR_UNEXPECTED_TUPLE — unexpected tuple/pair where an expression of a non-tuple type is expected
+- [x] ERROR_UNEXPECTED_TUPLE — unexpected tuple/pair where an expression of a non-tuple type is expected
 - [x] ERROR_NOT_A_TUPLE — unexpected expression where a tuple/pair is expected
 
 Additionally, you may implement some of the following extensions for extra course credit:
 
 - [x] (+0.2% extra credit) Support #natural-literals (ConstInt and ERROR_ILLEGAL_NEGATIVE_LITERAL)
 - [x] (+0.2% extra credit) Support #nested-function-declarations (DeclFun)
-- [ ] (+0.5% extra credit) Support #nullary-functions and #multiparameter-functions (DeclFun, Abstraction, Application, and ERROR_INCORRECT_ARITY_OF_MAIN, ERROR_INCORRECT_NUMBER_OF_ARGUMENTS, ERROR_UNEXPECTED_NUMBER_OF_PARAMETERS_IN_LAMBDA)
-- [ ] (+0.3% extra credit) Support #tuples (TypeTuple, Tuple, DotTuple and ERROR_TUPLE_INDEX_OUT_OF_BOUNDS, ERROR_UNEXPECTED_TUPLE_LENGTH)
+- [x] (+0.5% extra credit) Support #nullary-functions and #multiparameter-functions (DeclFun, Abstraction, Application, and ERROR_INCORRECT_ARITY_OF_MAIN, ERROR_INCORRECT_NUMBER_OF_ARGUMENTS, ERROR_UNEXPECTED_NUMBER_OF_PARAMETERS_IN_LAMBDA)
+- [x] (+0.3% extra credit) Support #tuples (TypeTuple, Tuple, DotTuple and ERROR_TUPLE_INDEX_OUT_OF_BOUNDS, ERROR_UNEXPECTED_TUPLE_LENGTH)

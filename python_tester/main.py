@@ -42,6 +42,6 @@ def main(folder):
 
 
 if __name__ == "__main__":
-    test_folder = 'week-1/extra/public'
+    test_folder = 'week-1/main/public'
 
     main(test_folder)
