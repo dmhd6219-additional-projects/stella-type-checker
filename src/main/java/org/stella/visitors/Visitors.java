@@ -12,25 +12,25 @@ import java.util.Map;
 public class Visitors {
     public class ProgramVisitor implements Program.Visitor<Context, Context> {
         @Override
-        public Context visit(AProgram p, Context context) {
-            Context ctx = new Context();
+        public Context visit(AProgram p, Context ctx) {
+            Context newContext = new Context();
 
             for (Extension extension : p.listextension_) {
-                ctx.extensions.addAll(extension.accept(new ExtensionVisitor(), ctx));
+                newContext.extensions.addAll(extension.accept(new ExtensionVisitor(), newContext));
             }
 
             for (Decl decl : p.listdecl_) {
-                decl.accept(new DeclVisitor(), ctx);
+                decl.accept(new DeclVisitor(), newContext);
             }
 
-            if (!ctx.functions.containsKey("main")) {
+            if (!newContext.functions.containsKey("main")) {
                 throw new StellaException("ERROR_MISSING_MAIN", "Main function not found");
             }
-            if (ctx.functions.get("main").listparamdecl_.size() != 1) {
-                throw new StellaException("ERROR_INCORRECT_ARITY_OF_MAIN", "Main function contains" + ctx.functions.get("main").listparamdecl_.size() + "but needed only 1");
+            if (newContext.functions.get("main").listparamdecl_.size() != 1) {
+                throw new StellaException("ERROR_INCORRECT_ARITY_OF_MAIN", "Main function contains" + newContext.functions.get("main").listparamdecl_.size() + "but needed only 1");
             }
 
-            return ctx;
+            return newContext;
         }
     }
 
