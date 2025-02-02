@@ -36,34 +36,34 @@ public class Visitors {
 
     public class DeclVisitor implements Decl.Visitor<Object, Context> {
         @Override
-        public Object visit(DeclFun p, Context arg) {
-            arg.functions.put(p.stellaident_, p);
+        public Object visit(DeclFun p, Context ctx) {
+            ctx.functions.put(p.stellaident_, p);
 
-            Context ctx = arg.copy();
+            Context newContext = ctx.copy();
 
-            if (p.listparamdecl_.size() != arg.functions.get(p.stellaident_).listparamdecl_.size()) {
+            if (p.listparamdecl_.size() != ctx.functions.get(p.stellaident_).listparamdecl_.size()) {
                 throw new StellaException("ERROR_INCORRECT_NUMBER_OF_ARGUMENTS", "Parameter count mismatch");
             }
 
             if (p.listparamdecl_.isEmpty()) {
-                checkExtension("#nullary-functions", ctx);
+                checkExtension("#nullary-functions", newContext);
             }
 
             if (p.listparamdecl_.size() > 1) {
-                checkExtension("#multiparameter-functions", ctx);
+                checkExtension("#multiparameter-functions", newContext);
             }
 
             for (ParamDecl param : p.listparamdecl_) {
-                ctx.vars.putAll(param.accept(new ParamDeclVisitor(), ctx));
+                newContext.vars.putAll(param.accept(new ParamDeclVisitor(), newContext));
             }
 
             for (Decl fun : p.listdecl_) {
-                checkExtension("#nested-function-declarations", ctx);
-                fun.accept(new DeclVisitor(), ctx);
+                checkExtension("#nested-function-declarations", newContext);
+                fun.accept(new DeclVisitor(), newContext);
             }
 
-            Type expected = p.returntype_.accept(new ReturnTypeVisitor(), arg);
-            Type type = p.expr_.accept(new ExprVisitor(), ctx);
+            Type expected = p.returntype_.accept(new ReturnTypeVisitor(), ctx);
+            Type type = p.expr_.accept(new ExprVisitor(), newContext);
 
             if (!(expected instanceof TypeFun) && (p.expr_ instanceof Abstraction)) {
                 throw new StellaException("ERROR_UNEXPECTED_LAMBDA",
@@ -92,30 +92,30 @@ public class Visitors {
             checkType(
                     expected,
                     type,
-                    ctx
+                    newContext
             );
 
             return null;
         }
 
         @Override
-        public Object visit(DeclFunGeneric p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "DeclFunGeneric not implemented");
+        public Object visit(DeclFunGeneric p, Context ctx) {
+            throw new StellaException("ERROR_NOT_IMPLEMENTED", "DeclFunGeneric not implemented");
         }
 
         @Override
-        public Object visit(DeclTypeAlias p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "DeclTypeAlias not implemented");
+        public Object visit(DeclTypeAlias p, Context ctx) {
+            throw new StellaException("ERROR_NOT_IMPLEMENTED", "DeclTypeAlias not implemented");
         }
 
         @Override
-        public Object visit(DeclExceptionType p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "DeclExceptionType not implemented");
+        public Object visit(DeclExceptionType p, Context ctx) {
+            throw new StellaException("ERROR_NOT_IMPLEMENTED", "DeclExceptionType not implemented");
         }
 
         @Override
-        public Object visit(DeclExceptionVariant p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "DeclExceptionVariant not implemented");
+        public Object visit(DeclExceptionVariant p, Context ctx) {
+            throw new StellaException("ERROR_NOT_IMPLEMENTED", "DeclExceptionVariant not implemented");
         }
     }
 
@@ -139,93 +139,93 @@ public class Visitors {
 
     public class ExprVisitor implements Expr.Visitor<Type, Context> {
         @Override
-        public Type visit(Sequence p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "Sequence not implemented");
+        public Type visit(Sequence p, Context ctx) {
+            throw new StellaException("ERROR_NOT_IMPLEMENTED", "Sequence not implemented");
         }
 
         @Override
-        public Type visit(Assign p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "Assign not implemented");
+        public Type visit(Assign p, Context ctx) {
+            throw new StellaException("ERROR_NOT_IMPLEMENTED", "Assign not implemented");
         }
 
         @Override
-        public Type visit(If p, Context arg) {
-            checkType(new TypeBool(), p.expr_1.accept(this, arg), arg);
-            checkType(p.expr_2.accept(this, arg), p.expr_3.accept(this, arg), arg);
+        public Type visit(If p, Context ctx) {
+            checkType(new TypeBool(), p.expr_1.accept(this, ctx), ctx);
+            checkType(p.expr_2.accept(this, ctx), p.expr_3.accept(this, ctx), ctx);
 
-            return p.expr_2.accept(this, arg);
+            return p.expr_2.accept(this, ctx);
         }
 
         @Override
-        public Type visit(Let p, Context arg) {
-            checkExtension("#let-bindings", arg);
+        public Type visit(Let p, Context ctx) {
+            checkExtension("#let-bindings", ctx);
             Map<String, Type> lhs = new HashMap<>();
             for (PatternBinding patternBinding : p.listpatternbinding_) {
-                lhs.putAll(patternBinding.accept(new PatternBindingVisitor(), arg));
+                lhs.putAll(patternBinding.accept(new PatternBindingVisitor(), ctx));
             }
 
-            return p.expr_.accept(this, arg.withVariables(lhs));
+            return p.expr_.accept(this, ctx.withVariables(lhs));
         }
 
         @Override
-        public Type visit(LetRec p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "LetRec not implemented");
+        public Type visit(LetRec p, Context ctx) {
+            throw new StellaException("ERROR_NOT_IMPLEMENTED", "LetRec not implemented");
         }
 
         @Override
-        public Type visit(TypeAbstraction p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "TypeAbstraction not implemented");
+        public Type visit(TypeAbstraction p, Context ctx) {
+            throw new StellaException("ERROR_NOT_IMPLEMENTED", "TypeAbstraction not implemented");
         }
 
         @Override
-        public Type visit(LessThan p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "LessThan not implemented");
+        public Type visit(LessThan p, Context ctx) {
+            throw new StellaException("ERROR_NOT_IMPLEMENTED", "LessThan not implemented");
         }
 
         @Override
-        public Type visit(LessThanOrEqual p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "LessThanOrEqual not implemented");
+        public Type visit(LessThanOrEqual p, Context ctx) {
+            throw new StellaException("ERROR_NOT_IMPLEMENTED", "LessThanOrEqual not implemented");
         }
 
         @Override
-        public Type visit(GreaterThan p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "GreaterThan not implemented");
+        public Type visit(GreaterThan p, Context ctx) {
+            throw new StellaException("ERROR_NOT_IMPLEMENTED", "GreaterThan not implemented");
         }
 
         @Override
-        public Type visit(GreaterThanOrEqual p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "GreaterThanOrEqual not implemented");
+        public Type visit(GreaterThanOrEqual p, Context ctx) {
+            throw new StellaException("ERROR_NOT_IMPLEMENTED", "GreaterThanOrEqual not implemented");
         }
 
         @Override
-        public Type visit(Equal p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "Equal not implemented");
+        public Type visit(Equal p, Context ctx) {
+            throw new StellaException("ERROR_NOT_IMPLEMENTED", "Equal not implemented");
         }
 
         @Override
-        public Type visit(NotEqual p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "NotEqual not implemented");
+        public Type visit(NotEqual p, Context ctx) {
+            throw new StellaException("ERROR_NOT_IMPLEMENTED", "NotEqual not implemented");
         }
 
         @Override
-        public Type visit(TypeAsc p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "TypeAsc not implemented");
+        public Type visit(TypeAsc p, Context ctx) {
+            throw new StellaException("ERROR_NOT_IMPLEMENTED", "TypeAsc not implemented");
         }
 
         @Override
-        public Type visit(TypeCast p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "TypeCast not implemented");
+        public Type visit(TypeCast p, Context ctx) {
+            throw new StellaException("ERROR_NOT_IMPLEMENTED", "TypeCast not implemented");
         }
 
         @Override
-        public Type visit(Abstraction p, Context arg) {
-            Context ctx = arg.withFunction(p);
-            Type exprType = p.expr_.accept(this, ctx);
+        public Type visit(Abstraction p, Context ctx) {
+            Context newContext = ctx.withFunction(p);
+            Type exprType = p.expr_.accept(this, newContext);
 
             ListType paramTypes = new ListType();
             for (ParamDecl param : p.listparamdecl_) {
-                ctx.vars.putAll(param.accept(new ParamDeclVisitor(), ctx));
-                for (Map.Entry<String, Type> entry : param.accept(new ParamDeclVisitor(), ctx).entrySet()) {
+                newContext.vars.putAll(param.accept(new ParamDeclVisitor(), newContext));
+                for (Map.Entry<String, Type> entry : param.accept(new ParamDeclVisitor(), newContext).entrySet()) {
                     paramTypes.add(entry.getValue());
                 }
             }
@@ -233,63 +233,63 @@ public class Visitors {
         }
 
         @Override
-        public Type visit(Variant p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "Variant not implemented");
+        public Type visit(Variant p, Context ctx) {
+            throw new StellaException("ERROR_NOT_IMPLEMENTED", "Variant not implemented");
         }
 
         @Override
-        public Type visit(Match p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "Match not implemented");
+        public Type visit(Match p, Context ctx) {
+            throw new StellaException("ERROR_NOT_IMPLEMENTED", "Match not implemented");
         }
 
         @Override
-        public Type visit(List p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "List not implemented");
+        public Type visit(List p, Context ctx) {
+            throw new StellaException("ERROR_NOT_IMPLEMENTED", "List not implemented");
         }
 
         @Override
-        public Type visit(Add p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "Add not implemented");
+        public Type visit(Add p, Context ctx) {
+            throw new StellaException("ERROR_NOT_IMPLEMENTED", "Add not implemented");
         }
 
         @Override
-        public Type visit(Subtract p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "Subtract not implemented");
+        public Type visit(Subtract p, Context ctx) {
+            throw new StellaException("ERROR_NOT_IMPLEMENTED", "Subtract not implemented");
         }
 
         @Override
-        public Type visit(LogicOr p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "LogicOr not implemented");
+        public Type visit(LogicOr p, Context ctx) {
+            throw new StellaException("ERROR_NOT_IMPLEMENTED", "LogicOr not implemented");
         }
 
         @Override
-        public Type visit(Multiply p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "Multiply not implemented");
+        public Type visit(Multiply p, Context ctx) {
+            throw new StellaException("ERROR_NOT_IMPLEMENTED", "Multiply not implemented");
         }
 
         @Override
-        public Type visit(Divide p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "Divide not implemented");
+        public Type visit(Divide p, Context ctx) {
+            throw new StellaException("ERROR_NOT_IMPLEMENTED", "Divide not implemented");
         }
 
         @Override
-        public Type visit(LogicAnd p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "LogicAnd not implemented");
+        public Type visit(LogicAnd p, Context ctx) {
+            throw new StellaException("ERROR_NOT_IMPLEMENTED", "LogicAnd not implemented");
         }
 
         @Override
-        public Type visit(Ref p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "Ref not implemented");
+        public Type visit(Ref p, Context ctx) {
+            throw new StellaException("ERROR_NOT_IMPLEMENTED", "Ref not implemented");
         }
 
         @Override
-        public Type visit(Deref p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "Deref not implemented");
+        public Type visit(Deref p, Context ctx) {
+            throw new StellaException("ERROR_NOT_IMPLEMENTED", "Deref not implemented");
         }
 
         @Override
-        public Type visit(Application p, Context arg) {
-            Type type = p.expr_.accept(this, arg);
+        public Type visit(Application p, Context ctx) {
+            Type type = p.expr_.accept(this, ctx);
             if (!(type instanceof TypeFun typeFun)) {
                 throw new StellaException("ERROR_NOT_A_FUNCTION", PrettyPrinter.print(p.expr_));
             }
@@ -299,25 +299,25 @@ public class Visitors {
             }
 
             for (int i = 0; i < p.listexpr_.size(); i++) {
-                checkType(typeFun.listtype_.get(i), p.listexpr_.get(i).accept(this, arg), arg);
+                checkType(typeFun.listtype_.get(i), p.listexpr_.get(i).accept(this, ctx), ctx);
             }
 
             return typeFun.type_;
         }
 
         @Override
-        public Type visit(TypeApplication p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "TypeApplication not implemented");
+        public Type visit(TypeApplication p, Context ctx) {
+            throw new StellaException("ERROR_NOT_IMPLEMENTED", "TypeApplication not implemented");
         }
 
         @Override
-        public Type visit(DotRecord p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "DotRecord not implemented");
+        public Type visit(DotRecord p, Context ctx) {
+            throw new StellaException("ERROR_NOT_IMPLEMENTED", "DotRecord not implemented");
         }
 
         @Override
-        public Type visit(DotTuple p, Context arg) {
-            Type type = p.expr_.accept(this, arg);
+        public Type visit(DotTuple p, Context ctx) {
+            Type type = p.expr_.accept(this, ctx);
             if (!(type instanceof TypeTuple typeTuple)) {
                 throw new StellaException("ERROR_NOT_A_TUPLE", "");
             }
@@ -331,113 +331,113 @@ public class Visitors {
         }
 
         @Override
-        public Type visit(Tuple p, Context arg) {
+        public Type visit(Tuple p, Context ctx) {
             if (p.listexpr_.size() == 2) {
-                checkExtension("#pairs", arg);
+                checkExtension("#pairs", ctx);
             } else {
-                checkExtension("#tuples", arg);
+                checkExtension("#tuples", ctx);
             }
 
             ListType listType = new ListType();
             for (Expr listExpr : p.listexpr_) {
-                listType.add(listExpr.accept(this, arg));
+                listType.add(listExpr.accept(this, ctx));
             }
             return new TypeTuple(listType);
         }
 
         @Override
-        public Type visit(Record p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "Record not implemented");
+        public Type visit(Record p, Context ctx) {
+            throw new StellaException("ERROR_NOT_IMPLEMENTED", "Record not implemented");
         }
 
         @Override
-        public Type visit(ConsList p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "ConsList not implemented");
+        public Type visit(ConsList p, Context ctx) {
+            throw new StellaException("ERROR_NOT_IMPLEMENTED", "ConsList not implemented");
         }
 
         @Override
-        public Type visit(Head p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "Head not implemented");
+        public Type visit(Head p, Context ctx) {
+            throw new StellaException("ERROR_NOT_IMPLEMENTED", "Head not implemented");
         }
 
         @Override
-        public Type visit(IsEmpty p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "IsEmpty not implemented");
+        public Type visit(IsEmpty p, Context ctx) {
+            throw new StellaException("ERROR_NOT_IMPLEMENTED", "IsEmpty not implemented");
         }
 
         @Override
-        public Type visit(Tail p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "Tail not implemented");
+        public Type visit(Tail p, Context ctx) {
+            throw new StellaException("ERROR_NOT_IMPLEMENTED", "Tail not implemented");
         }
 
         @Override
-        public Type visit(Panic p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "Panic not implemented");
+        public Type visit(Panic p, Context ctx) {
+            throw new StellaException("ERROR_NOT_IMPLEMENTED", "Panic not implemented");
         }
 
         @Override
-        public Type visit(Throw p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "Throw not implemented");
+        public Type visit(Throw p, Context ctx) {
+            throw new StellaException("ERROR_NOT_IMPLEMENTED", "Throw not implemented");
         }
 
         @Override
-        public Type visit(TryCatch p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "TryCatch not implemented");
+        public Type visit(TryCatch p, Context ctx) {
+            throw new StellaException("ERROR_NOT_IMPLEMENTED", "TryCatch not implemented");
         }
 
         @Override
-        public Type visit(TryWith p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "TryWith not implemented");
+        public Type visit(TryWith p, Context ctx) {
+            throw new StellaException("ERROR_NOT_IMPLEMENTED", "TryWith not implemented");
         }
 
         @Override
-        public Type visit(TryCastAs p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "TryCastAs not implemented");
+        public Type visit(TryCastAs p, Context ctx) {
+            throw new StellaException("ERROR_NOT_IMPLEMENTED", "TryCastAs not implemented");
         }
 
         @Override
-        public Type visit(Inl p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "Inl not implemented");
+        public Type visit(Inl p, Context ctx) {
+            throw new StellaException("ERROR_NOT_IMPLEMENTED", "Inl not implemented");
         }
 
         @Override
-        public Type visit(Inr p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "Inr not implemented");
+        public Type visit(Inr p, Context ctx) {
+            throw new StellaException("ERROR_NOT_IMPLEMENTED", "Inr not implemented");
         }
 
         @Override
-        public Type visit(Succ p, Context arg) {
-            checkType(new TypeNat(), p.expr_.accept(this, arg), arg);
+        public Type visit(Succ p, Context ctx) {
+            checkType(new TypeNat(), p.expr_.accept(this, ctx), ctx);
             return new TypeNat();
         }
 
         @Override
-        public Type visit(LogicNot p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "LogicNot not implemented");
+        public Type visit(LogicNot p, Context ctx) {
+            throw new StellaException("ERROR_NOT_IMPLEMENTED", "LogicNot not implemented");
         }
 
         @Override
-        public Type visit(Pred p, Context arg) {
-            checkType(new TypeNat(), p.expr_.accept(this, arg), arg);
+        public Type visit(Pred p, Context ctx) {
+            checkType(new TypeNat(), p.expr_.accept(this, ctx), ctx);
             return new TypeNat();
         }
 
         @Override
-        public Type visit(IsZero p, Context arg) {
-            checkType(new TypeNat(), p.expr_.accept(this, arg), arg);
+        public Type visit(IsZero p, Context ctx) {
+            checkType(new TypeNat(), p.expr_.accept(this, ctx), ctx);
             return new TypeBool();
         }
 
         @Override
-        public Type visit(Fix p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "Fix not implemented");
+        public Type visit(Fix p, Context ctx) {
+            throw new StellaException("ERROR_NOT_IMPLEMENTED", "Fix not implemented");
         }
 
         @Override
-        public Type visit(NatRec p, Context arg) {
-            checkType(new TypeNat(), p.expr_1.accept(this, arg), arg);
+        public Type visit(NatRec p, Context ctx) {
+            checkType(new TypeNat(), p.expr_1.accept(this, ctx), ctx);
 
-            Type type2 = p.expr_2.accept(this, arg);
+            Type type2 = p.expr_2.accept(this, ctx);
 
             ListType listType1 = new ListType();
             listType1.add(new TypeNat());
@@ -446,43 +446,43 @@ public class Visitors {
             listType2.add(type2);
 
             Type type1 = new TypeFun(listType1, new TypeFun(listType2, type2));
-            Type type3 = p.expr_3.accept(this, arg);
+            Type type3 = p.expr_3.accept(this, ctx);
 
-            checkType(type1, type3, arg);
+            checkType(type1, type3, ctx);
 
             return type2;
         }
 
         @Override
-        public Type visit(Fold p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "Fold not implemented");
+        public Type visit(Fold p, Context ctx) {
+            throw new StellaException("ERROR_NOT_IMPLEMENTED", "Fold not implemented");
         }
 
         @Override
-        public Type visit(Unfold p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "Unfold not implemented");
+        public Type visit(Unfold p, Context ctx) {
+            throw new StellaException("ERROR_NOT_IMPLEMENTED", "Unfold not implemented");
         }
 
         @Override
-        public Type visit(ConstTrue p, Context arg) {
+        public Type visit(ConstTrue p, Context ctx) {
             return new TypeBool();
         }
 
         @Override
-        public Type visit(ConstFalse p, Context arg) {
+        public Type visit(ConstFalse p, Context ctx) {
             return new TypeBool();
         }
 
         @Override
-        public Type visit(ConstUnit p, Context arg) {
-            checkExtension("#unit-type", arg);
+        public Type visit(ConstUnit p, Context ctx) {
+            checkExtension("#unit-type", ctx);
             return new TypeUnit();
         }
 
         @Override
-        public Type visit(ConstInt p, Context arg) {
+        public Type visit(ConstInt p, Context ctx) {
             if (p.integer_ != 0) {
-                checkExtension("#natural-literals", arg);
+                checkExtension("#natural-literals", ctx);
             }
 
             if (p.integer_ < 0) {
@@ -493,24 +493,24 @@ public class Visitors {
         }
 
         @Override
-        public Type visit(ConstMemory p, Context arg) {
-            throw new StellaException("NOT IMPLEMENTED", "ConstMemory not implemented");
+        public Type visit(ConstMemory p, Context ctx) {
+            throw new StellaException("ERROR_NOT_IMPLEMENTED", "ConstMemory not implemented");
         }
 
         @Override
-        public Type visit(Var p, Context arg) {
-            if (arg.vars.containsKey(p.stellaident_)) {
-                return arg.vars.get(p.stellaident_);
+        public Type visit(Var p, Context ctx) {
+            if (ctx.vars.containsKey(p.stellaident_)) {
+                return ctx.vars.get(p.stellaident_);
             }
 
-            if (arg.functions.containsKey(p.stellaident_)) {
-                DeclFun declFun = arg.functions.get(p.stellaident_);
+            if (ctx.functions.containsKey(p.stellaident_)) {
+                DeclFun declFun = ctx.functions.get(p.stellaident_);
                 ListType listType = new ListType();
                 for (ParamDecl param : declFun.listparamdecl_) {
-                    Map<String, Type> map = param.accept(new ParamDeclVisitor(), arg);
+                    Map<String, Type> map = param.accept(new ParamDeclVisitor(), ctx);
                     listType.addAll(map.values());
                 }
-                return new TypeFun(listType, declFun.returntype_.accept(new ReturnTypeVisitor(), arg));
+                return new TypeFun(listType, declFun.returntype_.accept(new ReturnTypeVisitor(), ctx));
             }
 
             throw new StellaException("ERROR_UNDEFINED_VARIABLE", p.stellaident_);
@@ -519,34 +519,34 @@ public class Visitors {
 
     public class ReturnTypeVisitor implements ReturnType.Visitor<Type, Context> {
         @Override
-        public Type visit(NoReturnType p, Context arg) {
-            return arg.currentFun.expr_.accept(new ExprVisitor(), arg);
+        public Type visit(NoReturnType p, Context ctx) {
+            return ctx.currentFun.expr_.accept(new ExprVisitor(), ctx);
         }
 
         @Override
-        public Type visit(SomeReturnType p, Context arg) {
+        public Type visit(SomeReturnType p, Context ctx) {
             return p.type_;
         }
     }
 
     public class PatternBindingVisitor implements PatternBinding.Visitor<Map<String, Type>, Context> {
         @Override
-        public Map<String, Type> visit(APatternBinding p, Context arg) {
+        public Map<String, Type> visit(APatternBinding p, Context ctx) {
             Map<String, Type> map = new HashMap<>();
             PatternVar pattern = (PatternVar) p.pattern_;
-            map.put(pattern.stellaident_, p.expr_.accept(new ExprVisitor(), arg));
+            map.put(pattern.stellaident_, p.expr_.accept(new ExprVisitor(), ctx));
             return map;
         }
     }
 
     public static class ExtensionVisitor implements Extension.Visitor<ListExtensionName, Context> {
         @Override
-        public ListExtensionName visit(AnExtension p, Context arg) {
+        public ListExtensionName visit(AnExtension p, Context ctx) {
             return p.listextensionname_;
         }
     }
 
-    public void checkType(Type expected, Type type, Context context) {
+    public void checkType(Type expected, Type type, Context ctx) {
         if (!expected.equals(type)) {
             if (expected instanceof TypeTuple tupleExpected && type instanceof TypeTuple typeTuple) {
                 if (tupleExpected.listtype_.size() != typeTuple.listtype_.size()) {
@@ -560,14 +560,14 @@ public class Visitors {
         }
 
         if (expected instanceof TypeUnit || type instanceof TypeUnit) {
-            checkExtension("#unit-type", context);
+            checkExtension("#unit-type", ctx);
         }
 
         if (expected instanceof TypeTuple expectedTuple) {
             if (expectedTuple.listtype_.size() == 2) {
-                checkExtension("#pairs", context);
+                checkExtension("#pairs", ctx);
             } else {
-                checkExtension("#tuples", context);
+                checkExtension("#tuples", ctx);
             }
         }
     }
